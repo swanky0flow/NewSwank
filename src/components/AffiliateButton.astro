@@ -1,0 +1,23 @@
+---
+export interface Props {
+  product: {
+    name: string;
+    price?: number;
+    affiliateUrl: string;
+    asin?: string;
+  };
+  variant?: 'primary' | 'secondary' | 'text';
+}
+
+const { product, variant = 'primary' } = Astro.props;
+---
+
+<a class={`affiliate-button ${variant}`} href={product.affiliateUrl} rel="noopener noreferrer" target="_blank">
+  <span>{product.name}</span>
+  {product.price ? (<span class="price"> — ${product.price}</span>) : null}
+</a>
+
+<style>
+.affiliate-button { display:inline-block; padding:0.5rem 1rem; border-radius:8px; text-decoration:none }
+.affiliate-button.primary { background:linear-gradient(90deg,#f59e0b,#fb923c); color:white }
+</style>

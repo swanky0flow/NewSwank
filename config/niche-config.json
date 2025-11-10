@@ -1,0 +1,41 @@
+{
+  "niche": {
+    "primary": "mens-lifestyle",
+    "subcategories": [
+      "luxury-watches",
+      "grooming-essentials",
+      "tech-gadgets",
+      "fitness-gear",
+      "fashion-accessories"
+    ],
+    "target_audience": {
+      "age_range": "25-45",
+      "interests": ["style", "technology", "fitness", "career"],
+      "buying_power": "premium"
+    },
+    "content_strategy": {
+      "tone": "sophisticated-yet-approachable",
+      "value_focus": "education-first",
+      "product_integration": "natural-recommendations"
+    }
+  },
+  "amazon_categories": [
+    "Clothing, Shoes & Jewelry",
+    "Electronics",
+    "Health & Household",
+    "Sports & Outdoors",
+    "Home & Kitchen"
+  ],
+  "keywords": [
+    "mens luxury watches",
+    "premium grooming products",
+    "best tech gadgets for men",
+    "fitness equipment",
+    "leather accessories"
+  ],
+  "price_ranges": {
+    "budget": [25, 75],
+    "mid": [75, 250],
+    "premium": [250, 1000]
+  }
+}
