@@ -13,6 +13,12 @@
     "node": ">=18"
   },
   "dependencies": {
-    "openai": "^4.0.0"
+    "openai": "^4.0.0",
+    "node-cron": "^3.0.0"
+  }
+  ,
+  "devDependencies": {
+    "@types/node": "^20.0.0"
   }
 }
+
