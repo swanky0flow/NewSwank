@@ -4,7 +4,18 @@ A small scaffold for an automated affiliate content platform.
 
 ## Auto-publish script
 
-The project includes a lightweight auto-publish scaffold at `scripts/auto-publish.ts` that demonstrates scheduling generation of articles.
+The project includes a lightweight auto-publish scaffold at `scripts/auto-publish.ts` that demonstrates scheduling generation of articles.[{
+	"resource": "/workspaces/NewSwank/node_modules/call-bind-apply-helpers/tsconfig.json",
+	"owner": "typescript",
+	"severity": 8,
+	"message": "File '@ljharb/tsconfig' not found.",
+	"source": "ts",
+	"startLineNumber": 2,
+	"startColumn": 13,
+	"endLineNumber": 2,
+	"endColumn": 31,
+	"origin": "extHost2"
+}]
 
 Key points:
 
