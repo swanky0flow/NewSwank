@@ -16,13 +16,13 @@ export interface Product {
   reviewCount?: number;
 }
 
-export async function searchAmazonProducts(keyword: string, _options: SearchOptions = {}): Promise<Product[]> {
+export async function searchAmazonProducts(_keyword: string, _options: SearchOptions = {}): Promise<Product[]> {
   // Placeholder: real implementation should call Amazon Product Advertising API (PAAPI)
   console.warn('searchAmazonProducts called in scaffold — implement PAAPI integration');
   return [];
 }
 
-export async function getProductDetails(asin: string): Promise<Product | null> {
+export async function getProductDetails(_asin: string): Promise<Product | null> {
   console.warn('getProductDetails called in scaffold — implement PAAPI integration');
   return null;
 }
