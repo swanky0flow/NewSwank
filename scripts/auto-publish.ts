@@ -6,12 +6,12 @@ import { generateValueDrivenArticle } from '../src/lib/content-generator';
  *
  * @param opts.schedule cron schedule string (defaults to env AUTO_PUBLISH_SCHEDULE or '0 2 * * *')
  * @param opts.runOnce if true, generate once and exit
- */npx ts-node scripts/auto-publish.ts --once
+ */
 export async function startAutoPublish(opts?: { schedule?: string; runOnce?: boolean }) {
   const schedule = opts?.schedule ?? process.env.AUTO_PUBLISH_SCHEDULE ?? '0 2 * * *';
   const runOnce = opts?.runOnce ?? (process.argv.includes('--once') || process.env.RUN_ONCE === '1');
 
-  async function generateAndHanpx ts-node scripts/auto-publish.ts --oncendle() {
+  async function generateAndHandle() {
     console.log('📅 auto-publish triggered — runOnce=' + runOnce);
     try {
       const article = await generateValueDrivenArticle();
