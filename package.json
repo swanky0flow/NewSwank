@@ -7,18 +7,37 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "lint": "echo \"No linter configured\""
+    "lint": "eslint src scripts --ext .ts,.tsx",
+    "lint:fix": "eslint src scripts --ext .ts,.tsx --fix",
+    "format": "prettier --write src scripts config",
+    "format:check": "prettier --check src scripts config",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
     "openai": "^4.0.0",
-    "node-cron": "^3.0.0"
+    "node-cron": "^3.0.0",
+    "dotenv": "^16.3.0",
+    "better-sqlite3": "^9.0.0"
   }
   ,
   "devDependencies": {
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "@vitest/ui": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.0.0"
   }
 }
 
