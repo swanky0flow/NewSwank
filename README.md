@@ -36,7 +36,7 @@ Run the script once (development):
 ```bash
 npx ts-node scripts/auto-publish.ts --once
 ```
-
+with
 Run the scheduled daemon (using ts-node register):
 
 ```bash
