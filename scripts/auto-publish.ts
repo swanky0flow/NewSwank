@@ -1,5 +1,11 @@
 import cron from 'node-cron';
 import { generateValueDrivenArticle } from '../src/lib/content-generator';
+import { Logger } from '../src/lib/logger';
+import { ENV } from '../src/lib/env';
+import { getDb, initializeSchema, jobRepository } from '../src/lib/db';
+import { articleRepository } from '../src/lib/db';
+
+const logger = new Logger('auto-publish');
 
 /**
  * Start the auto-publish job.
@@ -8,43 +14,77 @@ import { generateValueDrivenArticle } from '../src/lib/content-generator';
  * @param opts.runOnce if true, generate once and exit
  */
 export async function startAutoPublish(opts?: { schedule?: string; runOnce?: boolean }) {
-  const schedule = opts?.schedule ?? process.env.AUTO_PUBLISH_SCHEDULE ?? '0 2 * * *';
-  const runOnce = opts?.runOnce ?? (process.argv.includes('--once') || process.env.RUN_ONCE === '1');
+  const schedule = opts?.schedule ?? ENV.AUTO_PUBLISH_SCHEDULE ?? '0 2 * * *';
+  const runOnce = opts?.runOnce ?? process.argv.includes('--once');
+
+  // Initialize database
+  initializeSchema();
+  const db = getDb();
 
   async function generateAndHandle() {
-    console.log('📅 auto-publish triggered — runOnce=' + runOnce);
+    const jobId = jobRepository.create(db, 'article_generation');
+    jobRepository.updateStatus(db, jobId as number, 'running');
+
+    logger.info('📅 auto-publish triggered');
     try {
       const article = await generateValueDrivenArticle();
+
       if (article && typeof article.title === 'string') {
-        console.log('📝 Generated (scaffold):', article.title);
+        // Persist article to database
+        const articleId = articleRepository.create(db, {
+          title: article.title,
+          slug: article.slug,
+          content: article.content,
+          excerpt: article.excerpt,
+          category: article.category,
+        });
+
+        logger.info('📝 Article generated and persisted:', { id: articleId, title: article.title });
+        jobRepository.updateStatus(
+          db,
+          jobId as number,
+          'completed',
+          JSON.stringify({ articleId, title: article.title })
+        );
       } else {
-        console.log('📝 Generated (scaffold): [no title]');
+        logger.warn('Generated article missing title');
+        jobRepository.updateStatus(
+          db,
+          jobId as number,
+          'failed',
+          undefined,
+          'Article missing title'
+        );
       }
-      // TODO: persist to DB and cache products
     } catch (err) {
-      console.error('Auto-publish error (scaffold):', err);
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      logger.error('Auto-publish error:', { error: errorMsg });
+      jobRepository.updateStatus(db, jobId as number, 'failed', undefined, errorMsg);
     }
   }
 
   if (runOnce) {
     await generateAndHandle();
-    // allow caller / CLI to exit
-    return;
+    logger.info('Single run complete');
+    process.exit(0);
   }
 
   const task = cron.schedule(schedule, generateAndHandle, { scheduled: true });
-  console.log('Auto-publish scaffold scheduled — schedule =', schedule);
+  logger.info('Auto-publish scheduler started', { schedule });
 
   // Graceful shutdown
   const shutdown = async () => {
-    console.log('Shutting down auto-publish scheduler...');
+    logger.info('Shutting down auto-publish scheduler...');
     try {
       task.stop();
     } catch (e) {
-      /* ignore */
+      logger.warn('Error stopping task:', e);
     }
-    // give any in-flight jobs a moment (if desired, add tracking)
-    setTimeout(() => process.exit(0), 500);
+    // give any in-flight jobs a moment
+    setTimeout(() => {
+      logger.info('Scheduler shutdown complete');
+      process.exit(0);
+    }, 500);
   };
 
   process.on('SIGINT', shutdown);
@@ -55,7 +95,7 @@ export async function startAutoPublish(opts?: { schedule?: string; runOnce?: boo
 if (require.main === module) {
   // Start and don't await; the process will remain alive for scheduled runs.
   startAutoPublish().catch((err) => {
-    console.error('Failed to start auto-publish:', err);
+    logger.error('Failed to start auto-publish:', err);
     process.exit(1);
   });
 }
