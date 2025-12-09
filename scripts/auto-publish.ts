@@ -3,7 +3,7 @@ import { generateValueDrivenArticle } from '../src/lib/content-generator';
 import { Logger } from '../src/lib/logger';
 import { ENV } from '../src/lib/env';
 import { getDb, initializeSchema, jobRepository } from '../src/lib/db';
-import { articleRepository } from '../src/lib/db';
+import articleRepository from '../src/lib/db';
 
 const logger = new Logger('auto-publish');
 
