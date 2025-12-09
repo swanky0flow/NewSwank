@@ -2,8 +2,7 @@ import cron from 'node-cron';
 import { generateValueDrivenArticle } from '../src/lib/content-generator';
 import { Logger } from '../src/lib/logger';
 import { ENV } from '../src/lib/env';
-import { getDb, initializeSchema, jobRepository } from '../src/lib/db';
-import articleRepository from '../src/lib/db';
+import { getDb, initializeSchema, jobRepository, articleRepository } from '../src/lib/db';
 
 const logger = new Logger('auto-publish');
 
@@ -23,7 +22,7 @@ export async function startAutoPublish(opts?: { schedule?: string; runOnce?: boo
 
   async function generateAndHandle() {
     const jobId = jobRepository.create(db, 'article_generation');
-    jobRepository.updateStatus(db, jobId as number, 'running');
+    jobRepository.updateStatus(db, jobId, 'running');
 
     logger.info('📅 auto-publish triggered');
     try {
@@ -42,7 +41,7 @@ export async function startAutoPublish(opts?: { schedule?: string; runOnce?: boo
         logger.info('📝 Article generated and persisted:', { id: articleId, title: article.title });
         jobRepository.updateStatus(
           db,
-          jobId as number,
+          jobId,
           'completed',
           JSON.stringify({ articleId, title: article.title })
         );
@@ -50,7 +49,7 @@ export async function startAutoPublish(opts?: { schedule?: string; runOnce?: boo
         logger.warn('Generated article missing title');
         jobRepository.updateStatus(
           db,
-          jobId as number,
+          jobId,
           'failed',
           undefined,
           'Article missing title'
@@ -59,7 +58,7 @@ export async function startAutoPublish(opts?: { schedule?: string; runOnce?: boo
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
       logger.error('Auto-publish error:', { error: errorMsg });
-      jobRepository.updateStatus(db, jobId as number, 'failed', undefined, errorMsg);
+      jobRepository.updateStatus(db, jobId, 'failed', undefined, errorMsg);
     }
   }
 
