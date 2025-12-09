@@ -1,0 +1,23 @@
+{
+  "name": "newswank",
+  "type": "javascript",
+  "compatibility_date": "2025-12-09",
+  "main": "dist/index.js",
+  "assets": {
+    "directory": "./dist"
+  },
+  "build": {
+    "command": "npm run build",
+    "cwd": "./"
+  },
+  "env": {
+    "production": {
+      "routes": [
+        {
+          "pattern": "*.swankyboyz.com",
+          "zone_name": "swankyboyz.com"
+        }
+      ]
+    }
+  }
+}
